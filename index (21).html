@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mi Plata · administra tu dinero</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#E9EFF3;--ink:#10253A;--mut:#5C7184;--card:#fff;--line:#D3DEE7;--ok:#1F9D74;--warn:#D98A12;--bad:#D4493E;--r:14px}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 "Bricolage Grotesque",system-ui,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:20px 16px 60px}
+h1,h2,h3{margin:0;line-height:1.15}
+h2{font-size:18px;margin-bottom:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:16px;margin-top:16px}
+input,select,button{font:inherit;color:inherit}
+input,select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;margin-top:4px}
+label{display:block;font-size:14px;color:var(--mut);margin-bottom:10px}
+button{cursor:pointer;border:0;border-radius:10px;padding:10px 16px;background:var(--ink);color:#fff;font-weight:600}
+button.sec{background:transparent;color:var(--ink);border:1px solid var(--line)}
+:focus-visible{outline:3px solid #3C8DDB;outline-offset:2px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.top small{color:var(--mut)}
+.hero{background:var(--ink);color:#fff;border-radius:var(--r);padding:26px 22px;margin-top:16px}
+.hero p{margin:0;opacity:.75}
+.big{font-size:clamp(40px,9vw,72px);font-weight:800;letter-spacing:-.02em;line-height:1}
+.big.neg{color:#FF9A8F}
+.stats{display:flex;gap:26px;flex-wrap:wrap;margin-top:16px}
+.stats b{display:block;font-size:20px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bar{height:10px;background:#E3EBF1;border-radius:6px;overflow:hidden;margin:6px 0 2px}
+.bar i{display:block;height:100%;background:var(--ok);border-radius:6px}
+.bar i.warn{background:var(--warn)}.bar i.bad{background:var(--bad)}
+.g{margin-bottom:16px}.g div.l{display:flex;justify-content:space-between;gap:8px;font-size:15px}
+.g small{color:var(--mut)}
+.tip{border-left:4px solid var(--ok);padding:8px 12px;margin-bottom:10px;background:#F4F8FA;border-radius:0 10px 10px 0}
+.tip.warn{border-color:var(--warn)}.tip.bad{border-color:var(--bad)}
+.plan{background:#F4F8FA;border-radius:10px;padding:12px;margin-top:6px}
+.mov{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.mov:last-child{border:0}.mov small{color:var(--mut);display:block}
+.mov .x{background:none;color:var(--mut);padding:4px 8px;font-size:20px}
+.in{color:var(--ok);font-weight:600}.out{font-weight:600}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:8px 0 0}
+#auth{max-width:420px;margin-top:8vh}
+#auth h1{font-size:44px;font-weight:800;margin-bottom:6px}
+#auth p{color:var(--mut);margin:0 0 18px}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+details summary{cursor:pointer;font-weight:600}
+.or{display:flex;align-items:center;gap:10px;color:var(--mut);font-size:14px;margin:14px 0}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.gbtn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px}
+</style>
+</head>
+<body>
+
+<!-- ENTRAR -->
+<div id="auth" class="wrap">
+  <h1>Mi Plata</h1>
+  <p>Anota tus ingresos y gastos, mira cuánto ahorras y recibe consejos que se ajustan a cómo gastas tú.</p>
+  <div class="card">
+    <label>Correo<input id="email" type="email" autocomplete="email" placeholder="tucorreo@gmail.com"></label>
+    <label>Contraseña (mínimo 6 caracteres)<input id="pass" type="password" autocomplete="current-password"></label>
+    <div class="btns"><button id="bLogin">Entrar</button><button id="bReg" class="sec">Crear cuenta</button></div>
+    <div class="or"><span>o</span></div>
+    <button id="bGoogle" class="sec gbtn" type="button">
+      <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.6 5.9c4.4-4.1 7-10.1 7-17.6z"/><path fill="#FBBC05" d="M10.5 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.9 2.3-8.3 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>
+      Entrar con Google
+    </button>
+    <p class="err" id="authErr"></p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" class="wrap" hidden>
+  <div class="top"><h1>Mi Plata</h1><div><small id="who"></small> <button class="sec" id="bOut">Salir</button></div></div>
+
+  <section class="hero">
+    <p>Te queda este mes</p>
+    <div class="big" id="left">S/ 0.00</div>
+    <div class="stats">
+      <div><small>Ingresos</small><b id="sIng">S/ 0.00</b></div>
+      <div><small>Gastos</small><b id="sGas">S/ 0.00</b></div>
+      <div><small>Ahorro</small><b id="sAho">S/ 0.00</b></div>
+    </div>
+  </section>
+
+  <div class="grid">
+    <section class="card">
+      <h2>Anotar movimiento</h2>
+      <form id="f" onsubmit="return false">
+        <div class="row2">
+          <label>Tipo<select id="tipo"><option value="gasto">Gasto</option><option value="ingreso">Ingreso</option></select></label>
+          <label>Monto (S/)<input id="monto" type="number" min="0" step="0.01" inputmode="decimal"></label>
+        </div>
+        <div class="row2">
+          <label>Categoría<select id="cat"></select></label>
+          <label>Fecha<input id="fecha" type="date"></label>
+        </div>
+        <label>Nota (opcional)<input id="nota" maxlength="60" placeholder="Ej: almuerzo, sueldo, pasaje"></label>
+        <button id="bAdd">Guardar</button>
+        <p class="err" id="fErr"></p>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Tu plan del mes</h2>
+      <div id="groups"></div>
+      <details>
+        <summary>Cambiar mi plan (%)</summary>
+        <div class="row2" style="margin-top:10px">
+          <label>Necesidades<input id="pNec" type="number" min="0" max="100"></label>
+          <label>Deseos<input id="pDes" type="number" min="0" max="100"></label>
+        </div>
+        <label>Ahorro<input id="pAho" type="number" min="0" max="100"></label>
+        <button id="bPlan" class="sec">Guardar plan</button>
+        <p class="err" id="pErr"></p>
+      </details>
+    </section>
+
+    <section class="card">
+      <h2>Lo que he aprendido de ti</h2>
+      <div id="tips"></div>
+      <div id="sug"></div>
+    </section>
+  </div>
+
+  <section class="card" style="margin-top:16px">
+    <h2>Últimos movimientos</h2>
+    <div id="movs"></div>
+  </section>
+</div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,GoogleAuthProvider,signInWithPopup} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,doc,getDoc,setDoc,collection,addDoc,deleteDoc,onSnapshot,query,orderBy} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ====== PEGA AQUÍ TU CONFIGURACIÓN DE FIREBASE ====== */
+const firebaseConfig = {
+  apiKey: "TU_API_KEY",
+  authDomain: "TU_PROYECTO.firebaseapp.com",
+  projectId: "TU_PROYECTO",
+  appId: "TU_APP_ID"
+};
+/* ==================================================== */
+
+const $ = id => document.getElementById(id);
+const CATS = {Comida:'nec',Transporte:'nec',Vivienda:'nec',Servicios:'nec',Salud:'nec',Estudios:'nec',Ocio:'des',Ropa:'des',Salidas:'des',Otros:'des'};
+const GN = {nec:'Necesidades',des:'Deseos',aho:'Ahorro'};
+const S = n => (n<0?'-':'')+'S/ '+Math.abs(n).toLocaleString('es-PE',{minimumFractionDigits:2,maximumFractionDigits:2});
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const lf = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const sum = (l,t) => l.filter(x=>x.tipo===t).reduce((s,x)=>s+x.monto,0);
+const gs = (l,g) => l.filter(x=>x.tipo==='gasto'&&CATS[x.cat]===g).reduce((s,x)=>s+x.monto,0);
+
+let app, auth, db, user = null, movs = [], bud = {nec:50,des:30,aho:20}, unsub = null;
+const configured = firebaseConfig.apiKey !== "TU_API_KEY";
+if (configured) { app = initializeApp(firebaseConfig); auth = getAuth(app); db = getFirestore(app); }
+
+$('cat').innerHTML = Object.keys(CATS).map(c=>`<option>${c}</option>`).join('');
+$('fecha').value = lf(new Date());
+$('tipo').onchange = () => { $('cat').disabled = $('tipo').value==='ingreso'; };
+
+const errs = {'auth/invalid-credential':'Correo o contraseña incorrectos.','auth/invalid-email':'El correo no es válido.','auth/email-already-in-use':'Ese correo ya tiene una cuenta. Pulsa Entrar.','auth/weak-password':'La contraseña debe tener al menos 6 caracteres.','auth/missing-password':'Escribe tu contraseña.','auth/network-request-failed':'Sin conexión. Revisa tu internet.'};
+async function go(fn){
+  $('authErr').textContent='';
+  if(!configured){ $('authErr').textContent='Falta pegar tu configuración de Firebase en index.html.'; return; }
+  try{ await fn(auth,$('email').value.trim(),$('pass').value); }
+  catch(e){ $('authErr').textContent = errs[e.code] || 'No se pudo entrar. Intenta de nuevo.'; }
+}
+errs['auth/popup-closed-by-user'] = 'Cerraste la ventana de Google antes de entrar.';
+errs['auth/popup-blocked'] = 'Tu navegador bloqueó la ventana de Google. Permite las ventanas emergentes y vuelve a intentar.';
+errs['auth/unauthorized-domain'] = 'Este dominio no está autorizado. Agrégalo en Authentication → Configuración → Dominios autorizados.';
+errs['auth/operation-not-allowed'] = 'Ese método de acceso no está activado en Firebase.';
+$('bGoogle').onclick = () => go(a => signInWithPopup(a, new GoogleAuthProvider()));
+$('bLogin').onclick = () => go(signInWithEmailAndPassword);
+$('bReg').onclick = () => go(createUserWithEmailAndPassword);
+$('bOut').onclick = () => signOut(auth);
+
+if (configured) onAuthStateChanged(auth, async u => {
+  user = u;
+  $('auth').hidden = !!u; $('app').hidden = !u;
+  if (unsub) { unsub(); unsub = null; }
+  if (!u) { movs = []; return; }
+  $('who').textContent = u.email;
+  const snap = await getDoc(doc(db,'users',u.uid));
+  if (snap.exists() && snap.data().bud) bud = snap.data().bud;
+  unsub = onSnapshot(query(collection(db,'users',u.uid,'movs'),orderBy('fecha','desc')), s => {
+    movs = s.docs.map(d=>({id:d.id,...d.data()})); render();
+  });
+});
+
+$('bAdd').onclick = async () => {
+  const monto = parseFloat($('monto').value), fecha = $('fecha').value, tipo = $('tipo').value;
+  $('fErr').textContent = '';
+  if (!(monto>0)) { $('fErr').textContent='Escribe un monto mayor a 0.'; return; }
+  if (!fecha) { $('fErr').textContent='Elige una fecha.'; return; }
+  try {
+    await addDoc(collection(db,'users',user.uid,'movs'),{tipo,monto:Math.round(monto*100)/100,cat:tipo==='gasto'?$('cat').value:'Ingreso',nota:$('nota').value.trim(),fecha});
+    $('monto').value=''; $('nota').value='';
+  } catch(e){ $('fErr').textContent='No se pudo guardar. Revisa las reglas de Firestore.'; }
+};
+
+$('bPlan').onclick = async () => {
+  const n=+$('pNec').value,d=+$('pDes').value,a=+$('pAho').value;
+  if (n+d+a!==100) { $('pErr').textContent=`Los tres deben sumar 100 (ahora suman ${n+d+a}).`; return; }
+  $('pErr').textContent=''; await savePlan({nec:n,des:d,aho:a});
+};
+async function savePlan(p){ bud=p; await setDoc(doc(db,'users',user.uid),{bud:p},{merge:true}); render(); }
+
+/* ---- Lo que "aprende": mira tus meses anteriores y propone un plan ---- */
+function learnPlan(cur){
+  const ms=[...new Set(movs.map(x=>x.fecha.slice(0,7)))].filter(k=>k<cur);
+  let n=0,a=0,sv=0;
+  ms.forEach(k=>{
+    const mm=movs.filter(x=>x.fecha.startsWith(k)), i=sum(mm,'ingreso');
+    if(i<=0) return; n++; a+=gs(mm,'nec')/i; sv+=(i-sum(mm,'gasto'))/i;
+  });
+  if(!n) return null;
+  a/=n; sv/=n;
+  const aho=Math.min(30,Math.max(10,Math.round(sv*100)+5));
+  const nec=Math.min(Math.round(a*100),100-aho-10);
+  return {nec,des:100-aho-nec,aho,n};
+}
+
+function render(){
+  if(!user) return;
+  const now=new Date(), cur=lf(now).slice(0,7), dia=now.getDate(), dim=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
+  const m=movs.filter(x=>x.fecha.startsWith(cur));
+  const ing=sum(m,'ingreso'), gas=sum(m,'gasto'), aho=ing-gas;
+  $('left').textContent=S(aho); $('left').className='big'+(aho<0?' neg':'');
+  $('sIng').textContent=S(ing); $('sGas').textContent=S(gas);
+  $('sAho').textContent=S(aho)+(ing>0?` (${Math.round(aho/ing*100)}%)`:'');
+  $('pNec').value=bud.nec; $('pDes').value=bud.des; $('pAho').value=bud.aho;
+
+  // Plan del mes
+  const nec=gs(m,'nec'), des=gs(m,'des');
+  const rows=[['nec',nec,ing*bud.nec/100],['des',des,ing*bud.des/100],['aho',Math.max(aho,0),ing*bud.aho/100]];
+  $('groups').innerHTML=rows.map(([g,v,b])=>{
+    const p=b>0?Math.min(v/b*100,100):0;
+    const cls=g==='aho'?'':(b>0&&v>b?'bad':(b>0&&v>b*.85?'warn':''));
+    const txt=g==='aho'?`${S(v)} de ${S(b)} de meta`:`${S(v)} de ${S(b)}`;
+    return `<div class="g"><div class="l"><b>${GN[g]} ${bud[g]}%</b><span>${txt}</span></div><div class="bar"><i class="${cls}" style="width:${p}%"></i></div></div>`;
+  }).join('');
+
+  // Consejos
+  const tips=[]; const add=(t,tone='')=>tips.push(`<div class="tip ${tone}">${t}</div>`);
+  if(ing<=0) add('Anota tu ingreso del mes para que pueda armar tu plan y calcular tu ahorro.','warn');
+  else {
+    const proj=gas/dia*dim;
+    if(proj>ing) add(`A este ritmo gastarás ${S(proj)} este mes, más de lo que ingresaste. Intenta gastar ${S(Math.max(0,(ing-gas)/(dim-dia+1)))} o menos al día desde hoy.`,'bad');
+    if(des>ing*bud.des/100) add(`Ya pasaste tu presupuesto de deseos por ${S(des-ing*bud.des/100)}. Pausa salidas y compras no urgentes.`,'bad');
+    else if(dim-dia>=0 && ing*bud.des/100-des>0) add(`En deseos puedes gastar ${S((ing*bud.des/100-des)/(dim-dia+1))} al día hasta fin de mes.`);
+    if(nec>ing*bud.nec/100) add(`Tus necesidades superan el ${bud.nec}% planeado. Revisa si puedes bajar servicios, transporte o compras de comida.`,'warn');
+    const r=aho/ing*100;
+    if(r>=bud.aho) add(`Vas bien: estás ahorrando el ${Math.round(r)}% de tus ingresos.`);
+    else if(r>=0) add(`Estás ahorrando el ${Math.round(r)}% y tu meta es ${bud.aho}%. Te faltan ${S(ing*bud.aho/100-aho)}.`,'warn');
+  }
+  if(gas>0){
+    const by={}; m.filter(x=>x.tipo==='gasto').forEach(x=>by[x.cat]=(by[x.cat]||0)+x.monto);
+    const top=Object.entries(by).sort((a,b)=>b[1]-a[1])[0];
+    add(`Tu mayor gasto es ${esc(top[0])}: ${S(top[1])} (${Math.round(top[1]/gas*100)}% de lo que gastaste).`);
+    const small=m.filter(x=>x.tipo==='gasto'&&x.monto<10);
+    if(small.length>=8) add(`Tienes ${small.length} gastos menores a S/ 10 que suman ${S(small.reduce((s,x)=>s+x.monto,0))}. Los gastos hormiga se notan al final del mes.`,'warn');
+    // comparar con el mes anterior
+    const pd=new Date(now.getFullYear(),now.getMonth()-1,1), prev=lf(pd).slice(0,7);
+    const pm=movs.filter(x=>x.fecha.startsWith(prev)&&x.tipo==='gasto');
+    Object.entries(by).forEach(([c,v])=>{
+      const pv=pm.filter(x=>x.cat===c).reduce((s,x)=>s+x.monto,0);
+      if(pv>0&&v>pv*1.2&&v-pv>20) add(`En ${esc(c)} ya gastaste ${S(v-pv)} más que todo el mes pasado.`,'warn');
+    });
+  }
+  $('tips').innerHTML=tips.join('')||'<div class="tip">Anota tus primeros gastos y empiezo a darte consejos.</div>';
+
+  // Plan sugerido
+  const p=learnPlan(cur);
+  $('sug').innerHTML=p?`<div class="plan"><b>Plan sugerido según ${p.n} ${p.n>1?'meses':'mes'} de tus datos</b><br>Necesidades ${p.nec}% · Deseos ${p.des}% · Ahorro ${p.aho}%<br><button id="bApply" style="margin-top:10px">Usar este plan</button></div>`
+    :'<div class="plan">Aún estoy conociendo tus hábitos. Cuando termines un mes con ingresos y gastos anotados, te propongo un plan hecho a tu medida.</div>';
+  if(p) $('bApply').onclick=()=>savePlan({nec:p.nec,des:p.des,aho:p.aho});
+
+  // Lista
+  $('movs').innerHTML=movs.slice(0,25).map(x=>`<div class="mov"><div>${esc(x.cat)}${x.nota?' · '+esc(x.nota):''}<small>${esc(x.fecha)}</small></div><div><span class="${x.tipo==='ingreso'?'in':'out'}">${x.tipo==='ingreso'?'+':'-'}${S(x.monto)}</span> <button class="x" data-id="${x.id}" aria-label="Borrar">×</button></div></div>`).join('')||'<p style="color:var(--mut)">Todavía no hay movimientos. Anota tu primer ingreso arriba.</p>';
+  document.querySelectorAll('.x').forEach(b=>b.onclick=()=>deleteDoc(doc(db,'users',user.uid,'movs',b.dataset.id)));
+}
+</script>
+</body>
+</html>
